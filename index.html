@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Graph Visualizer & Calculator</title>
+    <script
+      type="text/javascript"
+      src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"
+    ></script>
+  </head>
+  <body>
+    <div id="app">
+      <h1>Graph Visualizer & Bitwise Calculators</h1>
+
+      <div class="main-container">
+        <div class="input-section">
+          <h2>Graph Input</h2>
+          <div class="graph-options">
+            <div>
+              <strong>Direction:</strong>
+              <label>
+                <input type="radio" name="direction" value="directed" checked />
+                Directed
+              </label>
+              <label>
+                <input type="radio" name="direction" value="undirected" />
+                Undirected
+              </label>
+            </div>
+            <div>
+              <strong>Weight:</strong>
+              <label><input type="checkbox" id="is-weighted" /> Weighted</label>
+            </div>
+          </div>
+          <textarea
+            id="graph-input"
+            rows="8"
+            placeholder="e.g., (Unweighted)&#10;1 2&#10;1 3&#10;or (Weighted)&#10;1 2 10&#10;1 3 5"
+          ></textarea>
+          <button id="generate-btn">Generate Graph</button>
+        </div>
+
+        <div class="output-area">
+          <div id="graph-container"></div>
+          <div class="calculators-section">
+            <div class="calculator">
+              <h2>Calculator 1</h2>
+              <input
+                type="text"
+                id="calc1-input"
+                placeholder="Enter numbers..."
+              />
+              <div class="buttons">
+                <button class="op-btn" data-calc="1" data-op="XOR">XOR</button>
+                <button class="op-btn" data-calc="1" data-op="OR">OR</button>
+                <button class="op-btn" data-calc="1" data-op="AND">AND</button>
+              </div>
+              <p>Result: <span id="calc1-result">0</span></p>
+            </div>
+            <div class="calculator">
+              <h2>Calculator 2</h2>
+              <input
+                type="text"
+                id="calc2-input"
+                placeholder="Enter numbers..."
+              />
+              <div class="buttons">
+                <button class="op-btn" data-calc="2" data-op="XOR">XOR</button>
+                <button class="op-btn" data-calc="2" data-op="OR">OR</button>
+                <button class="op-btn" data-calc="2" data-op="AND">AND</button>
+              </div>
+              <p>Result: <span id="calc2-result">0</span></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
