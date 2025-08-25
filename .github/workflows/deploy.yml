@@ -29,7 +29,8 @@ jobs:
           node-version: 20
           cache: 'npm'
       - name: Install dependencies
-        run: npm install
+        # This is the only line that needs to be changed
+        run: npm install --fetch-retries=5 --fetch-retry-mintimeout=20000
       - name: Build
         run: npm run build
       - name: Setup Pages
