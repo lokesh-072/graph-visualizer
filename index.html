@@ -1,82 +1,189 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Graph Visualizer & Calculator</title>
-    <script
-      type="text/javascript"
-      src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"
-    ></script>
+    <title>Graph Visualizer (modular)</title>
+    <!-- vis-network UMD on CDN -> provides global `vis` -->
+    <script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
   </head>
   <body>
     <div id="app">
-      <h1>Graph Visualizer & Bitwise Calculators</h1>
+      <header>
+        <h1>Graph Visualizer</h1>
+      </header>
 
-      <div class="main-container">
-        <div class="input-section">
-          <h2>Graph Input</h2>
-          <div class="graph-options">
-            <div>
-              <strong>Direction:</strong>
-              <label>
-                <input type="radio" name="direction" value="directed" checked />
-                Directed
-              </label>
-              <label>
-                <input type="radio" name="direction" value="undirected" />
-                Undirected
-              </label>
-            </div>
-            <div>
-              <strong>Weight:</strong>
-              <label><input type="checkbox" id="is-weighted" /> Weighted</label>
-            </div>
-          </div>
+      <main>
+        <section class="left-panel">
+          <h2>Input</h2>
+          <p>
+            Edge-list (u v [w]) or adjacency (u: v-w v2-w2). One entry per line.
+          </p>
           <textarea
             id="graph-input"
-            rows="8"
-            placeholder="e.g., (Unweighted)&#10;1 2&#10;1 3&#10;or (Weighted)&#10;1 2 10&#10;1 3 5"
+            placeholder="Example (weighted):
+1 2 10
+1 3 5
+2 3 2
+---
+Or adjacency (weighted):
+1: 2-10 3-5
+2: 3-2"
           ></textarea>
-          <button id="generate-btn">Generate Graph</button>
-        </div>
 
-        <div class="output-area">
-          <div id="graph-container"></div>
-          <div class="calculators-section">
-            <div class="calculator">
-              <h2>Calculator 1</h2>
-              <input
-                type="text"
-                id="calc1-input"
-                placeholder="Enter numbers..."
-              />
-              <div class="buttons">
-                <button class="op-btn" data-calc="1" data-op="XOR">XOR</button>
-                <button class="op-btn" data-calc="1" data-op="OR">OR</button>
-                <button class="op-btn" data-calc="1" data-op="AND">AND</button>
-              </div>
-              <p>Result: <span id="calc1-result">0</span></p>
+          <div
+            class="controls"
+            style="
+              display: flex;
+              flex-direction: column;
+              gap: 8px;
+              margin-top: 8px;
+            "
+          >
+            <div style="display: flex; gap: 12px; align-items: center">
+              <label
+                ><input
+                  type="radio"
+                  name="direction"
+                  value="undirected"
+                  checked
+                />
+                Undirected</label
+              >
+              <label
+                ><input type="radio" name="direction" value="directed" />
+                Directed</label
+              >
+              <label
+                ><input type="checkbox" id="weighted-checkbox" />
+                Weighted</label
+              >
             </div>
-            <div class="calculator">
-              <h2>Calculator 2</h2>
-              <input
-                type="text"
-                id="calc2-input"
-                placeholder="Enter numbers..."
-              />
-              <div class="buttons">
-                <button class="op-btn" data-calc="2" data-op="XOR">XOR</button>
-                <button class="op-btn" data-calc="2" data-op="OR">OR</button>
-                <button class="op-btn" data-calc="2" data-op="AND">AND</button>
-              </div>
-              <p>Result: <span id="calc2-result">0</span></p>
+
+            <div style="display: flex; gap: 12px; align-items: center">
+              <span style="font-size: 13px; color: #555"
+                >Graph input mode:</span
+              >
+              <label
+                ><input
+                  type="radio"
+                  name="graph-input-mode"
+                  id="graph-mode-plain"
+                  value="plain"
+                  checked
+                />
+                Plain text</label
+              >
+              <label
+                ><input
+                  type="radio"
+                  name="graph-input-mode"
+                  id="graph-mode-array"
+                  value="array"
+                />
+                Array (LeetCode)</label
+              >
             </div>
           </div>
-        </div>
-      </div>
+
+          <div class="buttons-row" style="margin-top: 8px">
+            <button id="generate-btn">Generate Graph</button>
+            <button id="reset-btn">Reset Highlights</button>
+          </div>
+
+          <hr />
+
+          <h3>Algorithms</h3>
+
+          <div class="alg-section">
+            <div class="alg-title">Dijkstra (shortest path)</div>
+            <div class="row">
+              <label
+                >Source
+                <input id="dijkstra-source" placeholder="node id" />
+              </label>
+              <label
+                >Target
+                <input id="dijkstra-target" placeholder="node id" />
+              </label>
+            </div>
+            <div class="buttons-row">
+              <button id="dijkstra-run">Run Dijkstra</button>
+            </div>
+          </div>
+
+          <div class="alg-section">
+            <div class="alg-title">Prim (MST — undirected)</div>
+            <div class="row">
+              <label
+                >Start (optional)
+                <input id="prim-start" placeholder="node id (optional)" />
+              </label>
+            </div>
+            <div class="buttons-row">
+              <button id="prim-run">Run Prim</button>
+            </div>
+          </div>
+
+          <hr />
+
+          <div id="results">
+            <h3>Results</h3>
+            <div id="dijkstra-result" class="result-block"></div>
+            <div id="prim-result" class="result-block"></div>
+          </div>
+        </section>
+
+        <section class="right-panel">
+          <div id="graph-container"></div>
+
+          <div class="legend">
+            <div><span class="legend-node default"></span> Node</div>
+            <div><span class="legend-edge default"></span> Edge</div>
+            <div><span class="legend-edge path"></span> Shortest path edge</div>
+            <div><span class="legend-node path"></span> Shortest path node</div>
+            <div><span class="legend-edge mst"></span> MST edge</div>
+          </div>
+
+          <div class="calc-section calc-section-right" aria-label="calculator">
+            <h3>Quick Calculators — multiple numbers</h3>
+
+            <p class="calc-desc">
+              Enter N numbers separated by spaces or commas (decimal, 0x-hex,
+              0b-binary). The operation will combine all numbers left-to-right.
+            </p>
+
+            <div class="calc-row">
+              <label style="width: 100%"
+                >Numbers
+                <input id="calc-list" placeholder="e.g. 13 7 2, 0xF, 0b1010" />
+              </label>
+            </div>
+
+            <div class="buttons-row calc-buttons" style="margin-top: 8px">
+              <button id="calc-and">AND (all numbers)</button>
+              <button id="calc-or">OR (all numbers)</button>
+              <button id="calc-xor">XOR (all numbers)</button>
+              <button id="dec-to-bin">Dec → Bin</button>
+              <button id="bin-to-dec">Bin → Dec</button>
+            </div>
+
+            <div
+              id="calc-result"
+              class="result-block calc-result"
+              style="margin-top: 12px"
+            ></div>
+          </div>
+          <!-- End calculator -->
+        </section>
+      </main>
+
+      <footer>
+        <small>Graph Visualizer — modular version</small>
+      </footer>
     </div>
-    <script type="module" src="/src/main.js"></script>
+
+    <!-- entry module -->
+    <script type="module" src="/src/app.js"></script>
   </body>
 </html>
